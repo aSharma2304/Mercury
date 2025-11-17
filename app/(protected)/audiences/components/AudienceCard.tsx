@@ -9,9 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import Link from "next/link"
 
 export function AudienceCard() {
   return (
+    <Link href={"/audiences/123"}>
     <Card className="w-full max-w-lg ">
       <CardHeader>
         <CardTitle>Audience name</CardTitle>
@@ -31,5 +33,6 @@ export function AudienceCard() {
         </Button>
       </CardFooter>
     </Card>
+    </Link>
   )
 }
