@@ -18,7 +18,7 @@ export default function BeefreeEditor() {
         }
       };
 
-      const response = await fetch('http://localhost:3000/api/beefree', {
+      const response = await fetch('http://localhost:4000/api/beefree', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid: 'demo-user' })
@@ -36,10 +36,12 @@ export default function BeefreeEditor() {
   }, []);
 
   return (
-    <div
-      id="beefree-react-demo"
-      ref={containerRef}
-      className='h-[800px] w-[90%] mt-4 rounded-md border border-muted-foreground '
-    />
+    <div className='w-full flex p-4 rounded-md '>
+      <div
+        id="beefree-react-demo"
+        ref={containerRef}
+        className='h-full w-[70%]  '
+      />
+    </div>
   );
 }

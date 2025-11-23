@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum send_type {
+  once
+  recurring
+}
+
+enum recurrence_type {
+  daily
+  weekly
+  monthly
+}
+
+enum campaign_run_status {
+  pending
+  running
+  completed
+  failed
+}
+
+model users {
+  id            Int              @id @default(autoincrement())
+  clerkId       String?
+  username      String?
+  organization  String?
+  created_at    DateTime         @default(now())
+  updated_at    DateTime         @updatedAt
+
+  audiences       audiences[]
+  email_templates email_template[]
+  campaigns       campaigns[]
+}
+
+model audiences {
+  id               String        @id @default(uuid())
+  userId           Int
+  name             String
+  description      String        @default("")
+  subscriber_count Int           @default(0)
+
+  user             users         @relation(fields: [userId], references: [id])
+  subscribers      subscribers[]
+  campaigns        campaigns[]
+
+  created_at       DateTime      @default(now())
+  updated_at       DateTime      @updatedAt
+}
+
+model subscribers {
+  id             String       @id @default(uuid())
+  audience_id    String
+  email          String       @unique
+  name           String?
+  isUnsubscribed Boolean      @default(false)
+
+  created_at     DateTime     @default(now())
+
+  audience       audiences    @relation(fields: [audience_id], references: [id])
+}
+
+model email_template {
+  id           String          @id @default(uuid())
+  name         String          @unique
+  subject      String?
+  html_content String?
+  json_content String?
+  user_id      Int
+  message      String?
+
+  created_at   DateTime        @default(now())
+  updated_at   DateTime        @updatedAt
+
+  user         users           @relation(fields: [user_id], references: [id])
+  campaigns    campaigns[]
+}
+
+model campaigns {
+  id             String           @id @default(uuid())
+  user_id        Int
+  audience_id    String
+  template_id    String
+  type           send_type
+  send_at        DateTime?
+  recurrence     recurrence_type?
+  last_send_date DateTime?
+
+  created_at     DateTime         @default(now())
+
+  user           users            @relation(fields: [user_id], references: [id])
+  audience       audiences        @relation(fields: [audience_id], references: [id])
+  template       email_template   @relation(fields: [template_id], references: [id])
+  runs           campaign_runs[]
+}
+
+model campaign_runs {
+  id           String                @id @default(uuid())
+  campaign_id  String
+  run_at       DateTime
+  status       campaign_run_status
+
+  campaign     campaigns             @relation(fields: [campaign_id], references: [id])
+}

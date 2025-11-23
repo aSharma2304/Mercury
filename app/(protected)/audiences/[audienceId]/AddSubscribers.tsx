@@ -1,3 +1,4 @@
+'use client'
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -10,10 +11,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import SubscriberForm from "../components/SubscriberForm"
+import ExcelUpload from "../components/ExcelUpload"
+import { useState } from "react"
+import ApiForm from "../components/ApiForm"
+import JsonForm from "../components/JsonForm"
 
 export function AddSubscribers() {
+  const [open, setOpen] = useState(false)
   return (
-    <Dialog >
+    <Dialog open={open} onOpenChange={setOpen} >
       <form className="w-[60%]">
         <DialogTrigger asChild>
           <Button variant={ 'outline'}>Add Subscribers</Button>
@@ -36,57 +43,31 @@ export function AddSubscribers() {
             <TabsContent value="form" className="mt-4">
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">Add recipients manually using the form below</p>
-                <div className="border rounded-lg p-4">
-                  <p>Form comes here</p>
-                </div>
+                <SubscriberForm onClose={() => setOpen(false)}/>
               </div>
             </TabsContent>
             
             <TabsContent value="excel" className="mt-4">
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">Upload an Excel file containing recipient data</p>
-                <div className="border-2 border-dashed rounded-lg p-8 text-center">
-                  <input type="file" accept=".xlsx,.xls" className="hidden" id="excel-upload" />
-                  <label htmlFor="excel-upload" className="cursor-pointer">
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium">Click to upload or drag and drop</p>
-                      <p className="text-xs text-muted-foreground">Excel files (.xlsx, .xls)</p>
-                    </div>
-                  </label>
-                </div>
+                <ExcelUpload onClose={() => setOpen(false)} />
               </div>
             </TabsContent>
             
             <TabsContent value="api" className="mt-4">
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">Use API endpoint to add recipients programmatically</p>
-                <div className="border rounded-lg p-4 bg-muted/50">
-                  <code className="text-sm">
-                    POST /api/recipients
-                    <br />
-                    Content-Type: application/json
-                  </code>
-                </div>
-                <p className="text-xs text-muted-foreground">API documentation and integration guide</p>
+                <ApiForm  onClose={() => setOpen(false)}/>
               </div>
             </TabsContent>
             
             <TabsContent value="json" className="mt-4">
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">Paste JSON data directly</p>
-                <textarea 
-                  className="w-full min-h-[200px] p-4 border rounded-lg font-mono text-sm"
-                  placeholder='{"recipients": [{"email": "user@example.com", "name": "John Doe"}]}'
-                />
+                <JsonForm  onClose={() => setOpen(false)} />
               </div>
             </TabsContent>
           </Tabs>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button type="submit">Save changes</Button>
-          </DialogFooter>
         </DialogContent>
       </form>
     </Dialog>

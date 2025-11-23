@@ -3,16 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavbarDock from "@/components/custom/NavbarDock";
 import { ThemeProvider } from "@/components/custom/theme-provider"
-import { ThemeToggle } from "@/components/custom/ThemeToggle";
-
-import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from '@clerk/nextjs'
+import {ClerkProvider} from "@clerk/nextjs"
+import SideOptions from "@/components/custom/SideOptions";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
      <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning >
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased relative h-screen`}>
             <ThemeProvider
@@ -45,22 +37,8 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              {/* <header className="flex justify-end items-center p-4 gap-4 h-16">
-                  <SignedOut>
-                    <SignInButton />
-                    <SignUpButton>
-                      <div>
-                      <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
-                        Sign Up
-                      </button>
-                      <ThemeToggle/>
-                      </div>
-                    </SignUpButton>
-                  </SignedOut>
-                  <SignedIn>
-                    <UserButton />
-                  </SignedIn>
-              </header> */}
+              <SideOptions/>
+              
               {/* <div className="absolute inset-0 -z-90 size-full bg-background  dark:bg-[radial-gradient(#2b2b2b_1px,transparent_1px)] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] bg-size-[20px_20px]"> */}
                 <div className="w-full min-h-screen flex justify-center">
                   {children}
