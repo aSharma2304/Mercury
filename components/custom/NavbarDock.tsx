@@ -1,6 +1,7 @@
 import {
   Cog,
   House,
+  Infinity,
   Mail,
   Route,
   UsersRound,
@@ -28,6 +29,13 @@ const data = [
       <Mail className='h-full w-full text-neutral-600 dark:text-neutral-300' />
     ),
     href: '/mails',
+  },
+  {
+    title: 'Campaigns',
+    icon: (
+      <Infinity  className='h-full w-full text-neutral-600 dark:text-neutral-300' />
+    ),
+    href: '/campaigns',
   },
   {
     title: 'Workflows',

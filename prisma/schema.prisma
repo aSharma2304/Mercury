@@ -1,11 +1,16 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  output   = "../lib/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum send_type {
@@ -27,12 +32,12 @@ enum campaign_run_status {
 }
 
 model users {
-  id            Int              @id @default(autoincrement())
-  clerkId       String?
-  username      String?
-  organization  String?
-  created_at    DateTime         @default(now())
-  updated_at    DateTime         @updatedAt
+  id           Int      @id @default(autoincrement())
+  clerkId      String?  @unique
+  username     String?
+  organization String?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
 
   audiences       audiences[]
   email_templates email_template[]
@@ -40,46 +45,46 @@ model users {
 }
 
 model audiences {
-  id               String        @id @default(uuid())
+  id               String @id @default(uuid())
   userId           Int
   name             String
-  description      String        @default("")
-  subscriber_count Int           @default(0)
+  description      String @default("")
+  subscriber_count Int    @default(0)
 
-  user             users         @relation(fields: [userId], references: [id])
-  subscribers      subscribers[]
-  campaigns        campaigns[]
+  user        users         @relation(fields: [userId], references: [id])
+  subscribers subscribers[]
+  campaigns   campaigns[]
 
-  created_at       DateTime      @default(now())
-  updated_at       DateTime      @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model subscribers {
-  id             String       @id @default(uuid())
+  id             String  @id @default(uuid())
   audience_id    String
-  email          String       @unique
+  email          String  @unique
   name           String?
-  isUnsubscribed Boolean      @default(false)
+  isUnsubscribed Boolean @default(false)
 
-  created_at     DateTime     @default(now())
+  created_at DateTime @default(now())
 
-  audience       audiences    @relation(fields: [audience_id], references: [id])
+  audience audiences @relation(fields: [audience_id], references: [id])
 }
 
 model email_template {
-  id           String          @id @default(uuid())
-  name         String          @unique
+  id           String  @id @default(uuid())
+  name         String  @unique
   subject      String?
   html_content String?
   json_content String?
   user_id      Int
   message      String?
 
-  created_at   DateTime        @default(now())
-  updated_at   DateTime        @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  user         users           @relation(fields: [user_id], references: [id])
-  campaigns    campaigns[]
+  user      users       @relation(fields: [user_id], references: [id])
+  campaigns campaigns[]
 }
 
 model campaigns {
@@ -92,19 +97,19 @@ model campaigns {
   recurrence     recurrence_type?
   last_send_date DateTime?
 
-  created_at     DateTime         @default(now())
+  created_at DateTime @default(now())
 
-  user           users            @relation(fields: [user_id], references: [id])
-  audience       audiences        @relation(fields: [audience_id], references: [id])
-  template       email_template   @relation(fields: [template_id], references: [id])
-  runs           campaign_runs[]
+  user     users           @relation(fields: [user_id], references: [id])
+  audience audiences       @relation(fields: [audience_id], references: [id])
+  template email_template  @relation(fields: [template_id], references: [id])
+  runs     campaign_runs[]
 }
 
 model campaign_runs {
-  id           String                @id @default(uuid())
-  campaign_id  String
-  run_at       DateTime
-  status       campaign_run_status
+  id          String              @id @default(uuid())
+  campaign_id String
+  run_at      DateTime
+  status      campaign_run_status
 
-  campaign     campaigns             @relation(fields: [campaign_id], references: [id])
+  campaign campaigns @relation(fields: [campaign_id], references: [id])
 }

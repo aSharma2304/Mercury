@@ -8,13 +8,11 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs'
-import SquareButton from "@/components/custom/SquareButton";
-import { SigninSvg } from "@/components/custom/SigninSvg";
 import { Button } from "../ui/button";
 
 const SideOptions = () => {
   return (
-    <div className="flex justify-center items-center p-4 gap-4 h-fit fixed bottom-4 right-4 rounded-md bg-card shadow-md">
+    <div className="flex justify-center items-center p-4 h-fit fixed bottom-4 right-4  w-fit gap-4 rounded-2xl bg-gray-50  dark:bg-neutral-900">
         <SignedOut>
         <SignInButton>
             <div>

@@ -1,4 +1,5 @@
 'use server'
+import prisma from "@/lib/db";
 
 type ExcelFormValues = {
   file: FileList;
@@ -23,4 +24,9 @@ export const addSubscribersJson = async({json,name,email}:JSONFormValues)=>{
 }
 export const addSubscribersExcel = async({file,name,email}:ExcelFormValues)=>{
     console.log("got file",file)
+}
+
+export const getAllSubscribers = async()=>{
+  const res = await prisma.audiences.findMany({});
+  return res;
 }
