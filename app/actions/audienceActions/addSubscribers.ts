@@ -1,5 +1,6 @@
 'use server'
 import prisma from "@/lib/db";
+import { isAuthenticated } from "@/utils/verifyUser";
 
 type ExcelFormValues = {
   file: FileList;
@@ -12,8 +13,40 @@ type JSONFormValues = {
   email?: unknown;
 };
 
-export const addSubscribersForm = async({email,name}:{email:string,name:string})=>{
-    console.log("got ", email, "and",name)
+export const addSubscribersForm = async({email,name,audienceId}:{email:string,name:string,audienceId:string})=>{
+    try{
+      const isUserAuthenticated = await isAuthenticated();
+      if(!isUserAuthenticated) return {
+        status:"failed",
+        message:"User not authenticated",
+      }
+
+      const addedSubscriber = await prisma.subscribers.create({
+        data:{
+          audience_id:audienceId,
+          name:name,
+          email:email,
+
+        }
+      })
+
+      if(!addedSubscriber) return {
+        message:"Failed to add subscriber",
+        status:"failed",
+      }
+      return {
+        status:"success",
+        message:"Successfully Added subscriber",
+        subscriber:addedSubscriber,
+      }
+
+    }catch(err:any){
+      console.warn("Failed to add subscribers")
+      return {
+        status:"failed",
+        message:"Failed to add subscribers"
+      }
+    }
 }
 
 export const addSubscribersAPI = async({url}:{url:string})=>{

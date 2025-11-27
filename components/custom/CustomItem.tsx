@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/item"
 import { AddSubscribers } from "@/app/(protected)/audiences/[audienceId]/AddSubscribers"
 
-export function CustomItem() {
+export function CustomItem({audienceId}:{audienceId:string}) {
   return (
     <div className="flex w-full flex-col gap-6">
       <Item variant="outline">
@@ -22,7 +22,7 @@ export function CustomItem() {
           </ItemDescription>
         </ItemContent>
         <ItemActions>
-          <AddSubscribers></AddSubscribers>
+          <AddSubscribers audienceId={audienceId}></AddSubscribers>
         </ItemActions>
       </Item>
       

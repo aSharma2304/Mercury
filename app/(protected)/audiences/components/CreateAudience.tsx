@@ -1,4 +1,5 @@
 'use client'
+import { addAudience } from "@/app/actions/audienceActions/audience"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -24,39 +25,39 @@ export function AddSubscribers() {
     description:z.string(),
   })
 
-  const {register , handleSubmit , formState:{errors}} = useForm<z.infer<typeof formSchema>>({
+  const {register , handleSubmit , reset,formState:{errors}} = useForm<z.infer<typeof formSchema>>({
     resolver:zodResolver(formSchema),
   })
 
   const onSubmit = async (values:z.infer<typeof formSchema>)=>{
-    console.log("got values ", values)
+    const {status,message}=await addAudience(values);
+    reset();
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen} >
-      <form className="w-fit">
         <DialogTrigger asChild>
           <Button variant={ 'outline'}>Create Audience</Button>
         </DialogTrigger>
-        <DialogContent className="w-[30%]">
+        <DialogContent className="w-1/3">
           <DialogHeader>
             <DialogTitle> New Audience</DialogTitle>
             <DialogDescription>
               Create new audience that suits your purpose
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
-            <div className="space-y-2">
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 w-full">
+            <div className="space-y-2 ">
             <Label htmlFor="email">Title</Label>
-            <Input type="text" {...register("title")}></Input>
+            <Input type="text" {...register("title")} className="w-full "></Input>
             {errors.title && <span className="text-sm text-destructive">{errors.title.message}</span>}
         </div>
         <div className="space-y-2">
             <Label htmlFor="json">Description</Label>
 
             <Textarea
-                {...register("description")}
-                className="h-20 overflow-auto font-mono text-sm whitespace-pre"
+              {...register("description")}
+              className="min-h-20 resize-y font-mono text-sm wrap-break-words whitespace-pre-wrap w-full"
             />
 
             {errors.description && (
@@ -71,7 +72,6 @@ export function AddSubscribers() {
           </form>
          
         </DialogContent>
-      </form>
     </Dialog>
   )
 }

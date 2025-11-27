@@ -3,6 +3,7 @@ import { CustomItem } from '@/components/custom/CustomItem';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar } from 'lucide-react';
+import { formatDistanceToNow } from "date-fns";
 
 import {
 Select,
@@ -18,34 +19,54 @@ import { Button } from '@/components/ui/button';
 import { ExcelSvg } from '@/components/custom/ExcelSvg';
 import { TableComponent } from '@/components/custom/TableComponent';
 import {columns} from "./subscribersColumns"
-import {subscribers} from "../../../../utils/sampleSubscribers"
+import { getAudience, getSubscribers } from '@/app/actions/audienceActions/audience';
+
+export type Subscriber = {
+  id: string;
+  name: string | null;
+  email: string;
+  created_at: Date;
+  audience_id: string;
+  isUnsubscribed: boolean;
+};
 
 
 const page = async ({ params }: { params: Promise<{audienceId: string}>  }) => {
 const {audienceId}= await params;
-const data = []
+
+const res = await getAudience(audienceId);
+const subscribersResult = await getSubscribers(audienceId);
+console.log("subscribersResult",subscribersResult);
+
+if(res.status==="failed"){
+    return <div>{res.message}</div>
+}
+
+const details = res.audience;
+const dateTime = formatDistanceToNow(details?.created_at ?? new Date(), {
+  addSuffix: true
+});
   return (
    <Container>
     <Card className='bg-neutral-300/26 '>
         <CardHeader>
-             <CardTitle className='flex gap-4 text-2xl'>
-                Name of Single audience <span className='opacity-50 font-semibold'>#{audienceId}</span>
+             <CardTitle className='flex gap-4 text-2xl items-end'>
+                {details?.name} <span className='opacity-50 text-sm font-thin'>#{audienceId}</span>
                 
              </CardTitle>
             <CardDescription className='flex gap-3 items-center text-base'>
-               <Calendar size={15}/> Created 4 days ago
-               <Badge  variant={"secondary"} className="text-lime-800 bg-lime-500/40 rounded-md ">Active</Badge>
-            </CardDescription>
+               <Calendar size={15}/> {dateTime}
+        </CardDescription>
         </CardHeader>
         <CardContent className='text-lg'>
-            Description of the single audience
+            {details?.description}
         </CardContent>
     </Card>
-    <CustomItem/>
+    <CustomItem audienceId={audienceId}/>
     <Card >
         <CardHeader>
              <CardTitle className='flex gap-4 text-2xl'>
-                28,500 people make up this audience
+                {details?.subscriber_count} people make up this audience
              </CardTitle>
              <CardDescription className='flex gap-4 justify-between '>
                 <section className='flex gap-4'>
@@ -72,7 +93,7 @@ const data = []
         </CardHeader>
         <CardContent className='text-lg'>
             {
-                subscribers.length?<SubscriberTable></SubscriberTable>:<span>No Subscriber added</span>
+                details?.subscriber_count !==0 ?<SubscriberTable subscribers = {subscribersResult.subscribers || []}></SubscriberTable>:<span>No Subscriber added</span>
             }
         </CardContent>
     </Card>
@@ -80,8 +101,8 @@ const data = []
   )
 }
 
-const SubscriberTable = ()=>{
-    return <TableComponent columns={columns}  data={subscribers} />
+const SubscriberTable = ({subscribers}:{subscribers:Subscriber[]  })=>{
+    return <TableComponent columns={columns}  data={subscribers } />
 }
 
 export default page

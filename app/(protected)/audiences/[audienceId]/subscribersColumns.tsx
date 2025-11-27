@@ -4,11 +4,13 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Trash } from "lucide-react"
 
 export type Subscriber = {
-  id: string
-  name: string
-  email: string
-  added_on: Date
-}
+  id: string;
+  name: string | null;
+  email: string;
+  created_at: Date;
+  audience_id: string;
+  isUnsubscribed: boolean;
+};
 
 export const columns: ColumnDef<Subscriber>[] = [
   {
@@ -33,10 +35,10 @@ export const columns: ColumnDef<Subscriber>[] = [
   },
 
   {
-    accessorKey: "added_on",
-    header: "Added On",
+    accessorKey: "created_at",
+    header: "created_ at",
     cell: ({ row }) => {
-        const value = row.getValue("added_on");
+        const value = row.getValue("created_at");
         const date = new Date(value as string);
 
         return <span>{date.toLocaleDateString("en-US")}</span>;

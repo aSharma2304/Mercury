@@ -9,23 +9,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { AudienceType } from "@/types/AudienceType"
 import Link from "next/link"
 
-export function AudienceCard() {
+
+
+export function AudienceCard({item}:{item:AudienceType}) {
   return (
-    <Link href={"/audiences/123"}>
-    <Card className="w-full max-w-lg ">
+    <Link href={`/audiences/${item?.id}`}>
+    <Card className="w-full max-w-xl ">
       <CardHeader>
-        <CardTitle>Audience name</CardTitle>
+        <CardTitle>{item?.name}</CardTitle>
         <CardDescription>
-          Audience description will come here to signify the logical meaning of the subscriber group
+          {item?.description}
         </CardDescription>
-        <CardAction>
+        {/* <CardAction>
           <Badge  variant={"secondary"} className="text-lime-800 bg-lime-500/40 rounded-md ">Active</Badge>
-        </CardAction>
+        </CardAction> */}
       </CardHeader>
       <CardContent>
-        <div>here analytics will come basic ones liek sub count , created on etc.</div>
+        <div className="flex gap-2">
+          <div className="w-1/2 bg-green-500/10 text-green-500 rounded-md p-2 text-sm flex flex-col items-center">
+            Subs : {item?.subscriber_count}
+          </div>
+          <div className="w-1/2 bg-yellow-500/10 text-yellow-500 rounded-md p-2 text-sm flex flex-col items-center">
+            Created at : {item?.created_at.toLocaleDateString()}
+          </div>
+          </div>
       </CardContent>
       <CardFooter className="flex-col gap-2">
         <Button type="submit" className="w-full">

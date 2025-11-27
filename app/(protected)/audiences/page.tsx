@@ -5,8 +5,11 @@ import CustomSearch from '@/components/custom/CustomSearch'
 import { AddSubscribers } from './components/CreateAudience'
 import { getAllSubscribers } from '@/app/actions/audienceActions/addSubscribers'
 
+export const revalidate = 60;
+
 const page = async () => {
-  const data = await getAllSubscribers();
+
+  const data = await getAllSubscribers() || [];
   console.log("got audiences data",data);
 
   return (
@@ -17,7 +20,7 @@ const page = async () => {
       <AddSubscribers/>
       </section>
       <section className='flex flex-wrap gap-6  '>
-      {Array.from({length:8}).map((item,ind)=><AudienceCard key={ind}/>)}
+      {data?.map((item)=><AudienceCard item={item}  key={item.id}/>)}
       </section>
     </Container>
     

@@ -17,7 +17,7 @@ import { useState } from "react"
 import ApiForm from "../components/ApiForm"
 import JsonForm from "../components/JsonForm"
 
-export function AddSubscribers() {
+export function AddSubscribers({audienceId}:{audienceId:string}) {
   const [open, setOpen] = useState(false)
   return (
     <Dialog open={open} onOpenChange={setOpen} >
@@ -43,7 +43,7 @@ export function AddSubscribers() {
             <TabsContent value="form" className="mt-4">
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">Add recipients manually using the form below</p>
-                <SubscriberForm onClose={() => setOpen(false)}/>
+                <SubscriberForm audienceId={audienceId} onClose={() => setOpen(false)}/>
               </div>
             </TabsContent>
             
