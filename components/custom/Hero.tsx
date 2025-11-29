@@ -1,14 +1,27 @@
-import { OrbitingCircles } from "@/components/ui/orbiting-circles"
-import { Mail, Workflow, UsersRound, UserRound  } from "lucide-react"
+"use client";
+import { PixelatedCanvas } from "@/components/ui/pixelated-canvas";
 
-
-const Hero = () => {
+export function Hero() {
   return (
-    <div >
-        some hero section 
-     </div>
-
-  )
+    <div className="mx-auto mt-8 flex w-full items-center justify-center">
+      <PixelatedCanvas
+        src="/white-circle.png"
+        width={400}
+        height={400}
+        cellSize={4}
+        dotScale={0.9}
+        shape="circle"
+        backgroundColor="#000000"
+        dropoutStrength={0.1}
+        interactive
+        distortionStrength={0.1}
+        distortionRadius={200}
+        distortionMode="repel"
+        followSpeed={0.2}
+        jitterStrength={4}
+        jitterSpeed={1}
+        sampleAverage
+      />
+    </div>
+  );
 }
-
-export default Hero

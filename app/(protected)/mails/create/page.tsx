@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import BeefreeSDK from '@beefree.io/sdk';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -9,9 +9,14 @@ import { Button } from "@/components/ui/button"
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from "zod"
 import { useForm } from 'react-hook-form';
+import { saveMail } from '@/app/actions/mailActions/mails';
 
 export default function BeefreeEditor() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [template,setTemplate]= useState<Record<string,string>>({
+    pageHtml:"",
+    pageJson:""
+  });
 
  const formSchema = z.object({
   title: z
@@ -60,12 +65,14 @@ export default function BeefreeEditor() {
         container: 'beefree-react-demo',
         language: 'en-US',
         onSave: (pageJson: string, pageHtml: string, ampHtml: string | null, templateVersion: number, language: string | null) => {
-          // console.log('Saved!', { pageJson, pageHtml, ampHtml, templateVersion, language });
-          console.log('Saved!', { pageJson });
+          setTemplate({
+            pageHtml:pageHtml,
+            pageJson:pageJson,
+          })
         },
         onError: (error: unknown) => {
           console.error('Error:', error);
-        }
+        },
       };
 
       const response = await fetch('http://localhost:4000/api/beefree', {
@@ -75,18 +82,35 @@ export default function BeefreeEditor() {
       })
     
       const token = await response.json();
-      console.log("token",token);
 
       const bee = new BeefreeSDK(token.token);
-      console.log("bee",bee)
       bee.start(beeConfig, {});
     }
 
     initializeEditor();
   }, []);
 
-  const onSubmit = (values:z.infer<typeof formSchema>)=>{
-    console.log("got values", values)
+  const onSubmit = async (values:z.infer<typeof formSchema>)=>{
+    try{
+      if(template.pageHtml ==="" || template.pageJson ===""){
+      console.log("First save something into the template")
+      return;
+    }
+
+    const res = await saveMail({
+      ...values,reply_to:values.replyTo,pageHtml:template.pageHtml,pageJson:template.pageJson, 
+    })
+
+    if(res?.status==="failed"){
+      console.log("error while saving mail", res?.message);
+      return ;
+    }
+
+    console.log(res?.message);
+
+    }catch(err :any){
+      console.warn("Error while creating mail",err?.message)
+    }
   }
 
   return (
@@ -94,7 +118,7 @@ export default function BeefreeEditor() {
       <div
         id="beefree-react-demo"
         ref={containerRef}
-        className='h-full w-[70%]  '
+        className='h-full '
       />
       <form onSubmit={handleSubmit(onSubmit)} className="flex-1 h-fit">
       <Card >

@@ -30,10 +30,24 @@ export const addSubscribersForm = async({email,name,audienceId}:{email:string,na
         }
       })
 
+
+
       if(!addedSubscriber) return {
         message:"Failed to add subscriber",
         status:"failed",
       }
+
+      const updatedAudience = await prisma.audiences.update({
+        where:{
+          id:audienceId,
+        },
+        data:{
+          subscriber_count:{
+            increment: 1
+          }
+        }
+      })
+
       return {
         status:"success",
         message:"Successfully Added subscriber",

@@ -73,12 +73,14 @@ model subscribers {
 
 model email_template {
   id           String  @id @default(uuid())
-  name         String  @unique
+  title        String
+  description  String
   subject      String?
   html_content String?
-  json_content String?
+  json_content String
   user_id      Int
-  message      String?
+  body         String?
+  reply_to     String
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

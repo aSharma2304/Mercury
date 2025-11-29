@@ -10,9 +10,9 @@ const page = () => {
     <Container>
       <HeadingPair heading='Mails' subheading='Create your mail templates that suit your usecase'/>
       <div className='flex justify-end'><Link href={"/mails/create"}><Button variant={ 'outline'}>Create Template</Button></Link></div>
-    <section className='w-full xl:max-w-[70%] flex flex-col gap-4'>
+    <section className='w-full flex flex-wrap gap-4'>
       {Array.from({length:3}).map((ele,index)=>{
-        return <MailCard key={index} title='Card Title' description='description comes here' tags={["abc","promotion","weekly"]}/>
+        return <MailCard key={index} title='Card Title' description='description comes here' createdAt=""  linkedTo='' tags={["abc","promotion","weekly"]} />
       })}
     </section>
     </Container>

@@ -58,7 +58,6 @@ export const addAudience = async({title,description}:{title:string, description:
 
 }
 
-
 export const getAudience = async(audienceId:string)=>{
 
     try{

@@ -2,7 +2,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -12,37 +11,56 @@ import {
 import { AudienceType } from "@/types/AudienceType"
 import Link from "next/link"
 
-
-
-export function AudienceCard({item}:{item:AudienceType}) {
+export function AudienceCard({ item }: { item: AudienceType }) {
   return (
-    <Link href={`/audiences/${item?.id}`}>
-    <Card className="w-full max-w-xl ">
-      <CardHeader>
-        <CardTitle>{item?.name}</CardTitle>
-        <CardDescription>
-          {item?.description}
-        </CardDescription>
-        {/* <CardAction>
-          <Badge  variant={"secondary"} className="text-lime-800 bg-lime-500/40 rounded-md ">Active</Badge>
-        </CardAction> */}
-      </CardHeader>
-      <CardContent>
-        <div className="flex gap-2">
-          <div className="w-1/2 bg-green-500/10 text-green-500 rounded-md p-2 text-sm flex flex-col items-center">
-            Subs : {item?.subscriber_count}
+    <Link href={`/audiences/${item?.id}`} className="block group">
+      <Card className="
+        min-w-sm max-w-md transition-all duration-300 
+        hover:shadow-lg hover:scale-[1.01] cursor-pointer
+        border border-gray-200 dark:border-zinc-800
+        ">
+        
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-lg font-semibold group-hover:text-primary transition">
+            {item?.name}
+          </CardTitle>
+
+          <CardDescription className="text-sm text-muted-foreground line-clamp-2">
+            {item?.description}
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent>
+          <div className="grid grid-cols-2 gap-3 mt-1">
+
+            <div className="
+              rounded-lg px-3 py-2 border border-green-500/30 
+              text-green-600 dark:text-green-400 text-sm flex flex-col items-center
+              ">
+              <span className="font-semibold">{item?.subscriber_count}</span>
+              <span className="text-xs opacity-70">Subscribers</span>
+            </div>
+
+            <div className="
+              rounded-lg px-3 py-2 border border-yellow-500/30 
+              text-yellow-600 dark:text-yellow-400 text-sm flex flex-col items-center
+              ">
+              <span className="font-semibold">
+                {item?.created_at.toLocaleDateString()}
+              </span>
+              <span className="text-xs opacity-70">Created</span>
+            </div>
+
           </div>
-          <div className="w-1/2 bg-yellow-500/10 text-yellow-500 rounded-md p-2 text-sm flex flex-col items-center">
-            Created at : {item?.created_at.toLocaleDateString()}
-          </div>
-          </div>
-      </CardContent>
-      <CardFooter className="flex-col gap-2">
-        <Button type="submit" className="w-full">
-          View Subscribers
-        </Button>
-      </CardFooter>
-    </Card>
+        </CardContent>
+
+        <CardFooter>
+          <Button className="w-full font-medium">
+            View Subscribers
+          </Button>
+        </CardFooter>
+
+      </Card>
     </Link>
   )
 }
