@@ -30,8 +30,6 @@ export const addSubscribersForm = async({email,name,audienceId}:{email:string,na
         }
       })
 
-
-
       if(!addedSubscriber) return {
         message:"Failed to add subscriber",
         status:"failed",
@@ -66,9 +64,56 @@ export const addSubscribersForm = async({email,name,audienceId}:{email:string,na
 export const addSubscribersAPI = async({url}:{url:string})=>{
     console.log("got url",url)
 }
-export const addSubscribersJson = async({json,name,email}:JSONFormValues)=>{
-    console.log("got json",json)
-}
+
+export const addSubscribersJson = async (
+  json: string,
+  nameKey: string,
+  emailKey: string,
+  audienceId: string
+) => {
+  try {
+    const isUserAuthenticated = await isAuthenticated();
+    if (!isUserAuthenticated) {
+      return { status: "failed", message: "User not authenticated" };
+    }
+
+    let jsonBody: any[];
+    try {
+      jsonBody = JSON.parse(json);
+    } catch {
+      return { status: "failed", message: "Invalid JSON format" };
+    }
+
+    if (!Array.isArray(jsonBody)) {
+      return { status: "failed", message: "JSON should be an array of objects" };
+    }
+
+    jsonBody = jsonBody.slice(0, 50);
+
+    const valuePairs = jsonBody
+      .map((sub) => ({
+        name: sub[nameKey],
+        email: sub[emailKey],
+        audience_id: audienceId,
+      }))
+      .filter((s) => s.name && s.email);
+
+    if (!valuePairs.length) {
+      return { status: "failed", message: "No valid entries found in JSON" };
+    }
+
+    await prisma.subscribers.createMany({
+      data: valuePairs,
+      skipDuplicates: true,
+    });
+
+    return { status: "success", message: "Added subscribers successfully" };
+  } catch (err: any) {
+    console.error("Error while saving JSON subscribers:", err.message);
+    return { status: "failed", message: "Failed to add subscribers using JSON" };
+  }
+};
+
 export const addSubscribersExcel = async({file,name,email}:ExcelFormValues)=>{
     console.log("got file",file)
 }

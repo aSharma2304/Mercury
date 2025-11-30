@@ -2,16 +2,34 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PencilRuler, Trash2, Mail } from "lucide-react"
+import { useRouter } from "next/navigation"
 
-type MailCardProps = {
-  title: string
-  description: string
-  tags: string[]
-  createdAt: string
-  linkedTo: string
-}
+// type MailCardProps = {
+//   id:string,
+//   title: string
+//   description: string
+//   tags: string[]
+//   createdAt: string
+//   linkedTo: string
+// }
+export type MailCardProps = {
+  id: string;
+  title: string;
+  description: string;
+  subject: string | null;
+  html_content: string | null;
+  json_content: string;
+  user_id: number;
+  body: string | null;
+  reply_to: string;
+  created_at: Date;
+  updated_at: Date;
+};
 
-export default function MailCard({ title, description, tags, createdAt, linkedTo,  }: MailCardProps) {
+export default function MailCard({ mail  }: {mail:MailCardProps}) {
+
+  const {id,title, description, created_at} = mail;
+  const router = useRouter();
 
   return (
     <div className="
@@ -38,7 +56,7 @@ export default function MailCard({ title, description, tags, createdAt, linkedTo
 
         {/* Tag Pills */}
         <div className="flex flex-wrap gap-2">
-          {tags.map((tag, i) => (
+          {/* {tags.map((tag, i) => (
             <Badge
               key={i}
               variant="outline"
@@ -49,14 +67,14 @@ export default function MailCard({ title, description, tags, createdAt, linkedTo
             >
               {tag}
             </Badge>
-          ))}
+          ))} */}
         </div>
 
         {/* Metadata */}
-        <div className="flex items-center gap-2 text-xs text-muted-foreground pt-2 border-t border-border/40">
-          <span>{createdAt}</span>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground pt-2 ">
+          <span>{created_at.toLocaleDateString()}</span>
           <span className="text-primary/40">•</span>
-          <span>{linkedTo}</span>
+          {/* <span>{linkedTo}</span> */}
         </div>
 
       </div>
@@ -69,7 +87,9 @@ export default function MailCard({ title, description, tags, createdAt, linkedTo
       ">
 
         <Button
-          onClick={(e) => { }}
+          onClick={(e) => { 
+            router.push(`/mails/create/${id}`)
+          }}
           size="icon"
           variant="outline"
           className="h-8 w-8 border-primary/30 hover:bg-primary/5 hover:border-primary/60"

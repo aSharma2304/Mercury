@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { addSubscribersJson} from "@/app/actions/audienceActions/addSubscribers";
 import { Textarea } from "@/components/ui/textarea";
 
-const JsonForm = ({onClose} :{onClose:()=>void}) => {
+const JsonForm = ({onClose,audienceId} :{onClose:()=>void,audienceId:string}) => {
    const schema = z.object({
         name:z.string().optional(),
         email:z.string().optional(),
@@ -19,10 +19,18 @@ const JsonForm = ({onClose} :{onClose:()=>void}) => {
         resolver:zodResolver(schema)
     })
 
-    const onSubmit = async (values:z.infer<typeof schema>)=>{
-        addSubscribersJson(values);
+    const onSubmit = async (values: z.infer<typeof schema>) => {
+        const { json, name, email } = values;
+
+        if (!name?.trim() || !email?.trim()) {
+            console.log("enter valid names for name and email field in your json");
+            return;
+        }
+
+        await addSubscribersJson(json, name, email, audienceId);
         onClose();
-    }
+    };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
        <div className="space-y-2">
@@ -40,12 +48,17 @@ const JsonForm = ({onClose} :{onClose:()=>void}) => {
 
             <Textarea
                 {...register("json")}
-                className="h-[200px] overflow-auto font-mono text-sm whitespace-pre"
-                placeholder={`{
-            [
-                { "email": "user@example.com", "name": "John Doe" , ...}
-            ]
-            }`}
+                className="h-[225px] overflow-auto font-mono text-sm whitespace-pre"
+                placeholder={`[
+    {
+        "name": "john doe",
+        "email": "john@example.com"
+    },
+    {
+        "name": "Sarah parks",
+        "email": "sparks@example.com"
+    }
+]`}
             />
 
             {errors.json && (

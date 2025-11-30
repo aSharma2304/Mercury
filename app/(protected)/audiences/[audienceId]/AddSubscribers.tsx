@@ -64,7 +64,7 @@ export function AddSubscribers({audienceId}:{audienceId:string}) {
             <TabsContent value="json" className="mt-4">
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">Paste JSON data directly</p>
-                <JsonForm  onClose={() => setOpen(false)} />
+                <JsonForm audienceId={audienceId}  onClose={() => setOpen(false)} />
               </div>
             </TabsContent>
           </Tabs>

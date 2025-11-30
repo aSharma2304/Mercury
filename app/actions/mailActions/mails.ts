@@ -3,7 +3,7 @@
 import prisma from "@/lib/db";
 import { Mail } from "@/types/MailType"
 import { isAuthenticated } from "@/utils/verifyUser"
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 
 export const saveMail = async(mail:Mail)=>{
     try{
@@ -72,4 +72,51 @@ export const saveMail = async(mail:Mail)=>{
 
     }
 
+}
+
+export const getMails = async()=>{
+    try{
+        const isUserAuthenticated = await isAuthenticated();
+        if(!isUserAuthenticated){
+            return {
+                status:"failed",
+                message:"User not authenticated",
+            }
+        }
+
+        const user = await currentUser();
+
+        const foundUser = await prisma.users.findUnique({
+            where:{
+                clerkId:user?.id
+            }
+        })
+
+        if(!foundUser){
+            return {
+                status:"failed",
+                message:"User not found with this id",
+            }
+        }
+
+        const mails = await prisma.email_template.findMany({
+
+            where:{
+                user_id:foundUser.id,
+            }
+        })
+
+        return {
+            status:"success",
+            message:"Got mails successfully",
+            mails:mails,
+        }
+                
+    }catch(err:any){
+        console.warn("Error while fetching mails",err.message);
+        return {
+            status:"failed",
+            message:"Failed to fetch mails"
+        }
+    }
 }

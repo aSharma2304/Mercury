@@ -1,7 +1,7 @@
 "use client"
 import { Button } from "@/components/ui/button"
 import { ColumnDef } from "@tanstack/react-table"
-import { Trash } from "lucide-react"
+import { Trash2 } from "lucide-react"
 
 export type Subscriber = {
   id: string;
@@ -50,7 +50,14 @@ export const columns: ColumnDef<Subscriber>[] = [
     accessorKey: "id",
     header: "Actions",
     cell: ({ row }) => {
-      return <Button size={"sm"} variant={"outline"}><Trash color="red" size={20} /></Button>
+      return <Button
+          onClick={(e) => {  }}
+          size="icon"
+          variant="outline"
+          className="h-8 w-8 border-destructive/30 hover:bg-destructive/10 hover:border-destructive/60"
+        >
+          <Trash2 size={16} className="text-destructive" />
+        </Button>
     },
   },
 ]
