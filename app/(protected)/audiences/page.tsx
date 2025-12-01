@@ -19,7 +19,7 @@ const page = async () => {
       <CustomSearch placeholder='Search Audiences'/>
       <AddSubscribers/>
       </section>
-      <section className='flex flex-wrap gap-6  '>
+      <section className='flex flex-wrap gap-6 items-stretch  '>
       {data?.map((item)=><AudienceCard item={item}  key={item.id}/>)}
       </section>
     </Container>

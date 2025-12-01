@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import z from "zod"
 
 
@@ -31,6 +32,11 @@ export function AddSubscribers() {
 
   const onSubmit = async (values:z.infer<typeof formSchema>)=>{
     const {status,message}=await addAudience(values);
+    if(status==="failed"){
+      toast.error(message);
+    }else{
+      toast.success(message);
+    }
     reset();
   }
 

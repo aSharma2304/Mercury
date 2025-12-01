@@ -5,6 +5,7 @@ import NavbarDock from "@/components/custom/NavbarDock";
 import { ThemeProvider } from "@/components/custom/theme-provider"
 import {ClerkProvider} from "@clerk/nextjs"
 import SideOptions from "@/components/custom/SideOptions";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default function RootLayout({
               {/* <div className="absolute inset-0 -z-90 size-full bg-background  dark:bg-[radial-gradient(#2b2b2b_1px,transparent_1px)] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] bg-size-[20px_20px]"> */}
                 <div className="w-full min-h-screen flex justify-center">
                   {children}
+                  <Toaster/>
                 </div>
               {/* </div> */}
             </ThemeProvider>

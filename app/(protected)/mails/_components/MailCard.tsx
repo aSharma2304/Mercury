@@ -1,4 +1,6 @@
 'use client'
+import { deleteMail } from "@/app/actions/mailActions/mails"
+import { DeleteModal } from "@/components/custom/DeleteModal"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PencilRuler, Trash2, Mail } from "lucide-react"
@@ -30,6 +32,10 @@ export default function MailCard({ mail  }: {mail:MailCardProps}) {
 
   const {id,title, description, created_at} = mail;
   const router = useRouter();
+
+  const handleDelete = async()=>{
+    return await deleteMail(mail.id)
+  }
 
   return (
     <div className="
@@ -97,6 +103,11 @@ export default function MailCard({ mail  }: {mail:MailCardProps}) {
           <PencilRuler size={16} className="text-primary" />
         </Button>
 
+        <DeleteModal
+        onDelete={handleDelete}
+        title="Delete Mail"
+        description="Are you sure you want to delete this mail ? This action is irreversible"
+        triggerButton={
         <Button
           onClick={(e) => {  }}
           size="icon"
@@ -105,7 +116,8 @@ export default function MailCard({ mail  }: {mail:MailCardProps}) {
         >
           <Trash2 size={16} className="text-destructive" />
         </Button>
-
+        }
+        />
       </div>
     </div>
   )

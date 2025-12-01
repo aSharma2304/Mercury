@@ -36,7 +36,7 @@ const SubscriberForm = ({onClose,audienceId} :{onClose:()=>void,audienceId:strin
         </div>
         <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit">Add</Button>
         </div>
     </form>
   )

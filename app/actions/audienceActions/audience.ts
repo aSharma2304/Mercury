@@ -97,33 +97,33 @@ export const getAudience = async(audienceId:string)=>{
 export const getSubscribers = async(audienceId:string)=>{
     try{
         const isUserAuthenticated = await isAuthenticated();
-    if(!isUserAuthenticated) return {
-        status:"failed",
-        message:"User not authenticated"
-    }
-
-    const audience = await prisma.audiences.findUnique({
-        where:{
-            id:audienceId,
+        if(!isUserAuthenticated) return {
+            status:"failed",
+            message:"User not authenticated"
         }
-    })
 
-    if(!audience) return {
-        status:"failed",
-        message:"No audience with this id exists"
-    }
+        const audience = await prisma.audiences.findUnique({
+            where:{
+                id:audienceId,
+            }
+        })
 
-    const subscribers = await prisma.subscribers.findMany({
-        where:{
-            audience_id:audienceId,
+        if(!audience) return {
+            status:"failed",
+            message:"No audience with this id exists"
         }
-    })
 
-    return {
-        status:"success",
-        message:"Got subscribers Successfully",
-        subscribers:subscribers
-    }
+        const subscribers = await prisma.subscribers.findMany({
+            where:{
+                audience_id:audienceId,
+            }
+        })
+
+        return {
+            status:"success",
+            message:"Got subscribers Successfully",
+            subscribers:subscribers
+        }
         
     }catch(err:any){
         console.warn(("Error fetching subscribers"))
@@ -134,4 +134,54 @@ export const getSubscribers = async(audienceId:string)=>{
 
     }
 
+}
+
+export const deleteAudience = async(audienceId:string)=>{
+    try{
+
+        const isUserAuthenticated = await isAuthenticated();
+        if(!isUserAuthenticated) return {
+            status:"failed",
+            message:"User not authenticated"
+        }
+        
+        const user = await currentUser();
+
+        const foundUser = await prisma.users.findUnique({
+            where:{
+                clerkId:user?.id
+            }
+        })
+
+        const audience = await prisma.audiences.findUnique({
+            where:{
+                id:audienceId,
+                userId:foundUser?.id
+            }
+        })
+
+        if(!audience) return {
+            status:"failed",
+            message:"No audience with this id exists"
+        }
+
+        await prisma.audiences.delete({
+            where:{
+                id:audienceId,
+                userId:foundUser?.id
+            }
+        })
+        
+        return {
+            status:"success",
+            message:"Successfully deleted audience"
+        }
+        
+    }catch(err:any){
+        console.warn("Error while deleting audience", err.message);
+        return {
+            status:"failed",
+            message:"Failed to delete audience"
+        }
+    }
 }

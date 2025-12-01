@@ -120,3 +120,53 @@ export const getMails = async()=>{
         }
     }
 }
+
+export const deleteMail = async (mailId: string) => {
+    try {
+
+        const isUserAuthenticated = await isAuthenticated();
+        if (!isUserAuthenticated) return {
+            status: "failed",
+            message: "User not authenticated"
+        }
+
+        const user = await currentUser();
+
+        const foundUser = await prisma.users.findUnique({
+            where: {
+                clerkId: user?.id
+            }
+        });
+
+        const mail = await prisma.email_template.findUnique({
+            where: {
+                id: mailId,
+                user_id: foundUser?.id
+            }
+        });
+
+        if (!mail) return {
+            status: "failed",
+            message: "No mail with this id exists"
+        }
+
+        await prisma.email_template.delete({
+            where: {
+                id: mailId,
+                user_id: foundUser?.id
+            }
+        })
+
+        return {
+            status: "success",
+            message: "Successfully deleted mail"
+        }
+
+    } catch (err: any) {
+        console.warn("Error while deleting mail", err.message);
+        return {
+            status: "failed",
+            message: "Failed to delete mail"
+        }
+    }
+}

@@ -1,4 +1,6 @@
 "use client"
+import { deleteSubscriber } from "@/app/actions/subscriberActions/subscriber";
+import { DeleteModal } from "@/components/custom/DeleteModal";
 import { Button } from "@/components/ui/button"
 import { ColumnDef } from "@tanstack/react-table"
 import { Trash2 } from "lucide-react"
@@ -11,6 +13,10 @@ export type Subscriber = {
   audience_id: string;
   isUnsubscribed: boolean;
 };
+
+const handleDelete = async(id:string)=>{
+  return await deleteSubscriber(id);
+}
 
 export const columns: ColumnDef<Subscriber>[] = [
   {
@@ -50,14 +56,21 @@ export const columns: ColumnDef<Subscriber>[] = [
     accessorKey: "id",
     header: "Actions",
     cell: ({ row }) => {
-      return <Button
-          onClick={(e) => {  }}
-          size="icon"
-          variant="outline"
-          className="h-8 w-8 border-destructive/30 hover:bg-destructive/10 hover:border-destructive/60"
-        >
-          <Trash2 size={16} className="text-destructive" />
-        </Button>
+      return <DeleteModal
+                onDelete={()=>handleDelete(row.getValue("id"))}
+                title="Delete Subscriber"
+                description="Are you sure you want to delete this subscriber ? This action is irreversible"
+                triggerButton={
+                <Button
+                  onClick={(e) => {  }}
+                  size="icon"
+                  variant="outline"
+                  className="h-8 w-8 border-destructive/30 hover:bg-destructive/10 hover:border-destructive/60"
+                >
+                  <Trash2 size={16} className="text-destructive" />
+                </Button>
+              }
+              />
     },
   },
 ]

@@ -17,7 +17,8 @@ export function AudienceCard({ item }: { item: AudienceType }) {
       <Card className="
         min-w-sm max-w-md transition-all duration-300 
         hover:shadow-lg hover:scale-[1.01] cursor-pointer
-        border border-gray-200 dark:border-zinc-800
+        border border-gray-200 dark:border-zinc-800 h-full
+        flex flex-col justify-between
         ">
         
         <CardHeader className="space-y-1">
@@ -30,9 +31,9 @@ export function AudienceCard({ item }: { item: AudienceType }) {
           </CardDescription>
         </CardHeader>
 
+        <section className="space-y-4">
         <CardContent>
           <div className="grid grid-cols-2 gap-3 mt-1">
-
             <div className="
               rounded-lg px-3 py-2 border border-green-500/30 
               text-green-600 dark:text-green-400 text-sm flex flex-col items-center
@@ -59,6 +60,8 @@ export function AudienceCard({ item }: { item: AudienceType }) {
             View Subscribers
           </Button>
         </CardFooter>
+        </section>
+
 
       </Card>
     </Link>

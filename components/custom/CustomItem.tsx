@@ -1,6 +1,4 @@
-import { BadgeCheckIcon, ChevronRightIcon } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
+'use client'
 import {
   Item,
   ItemActions,
@@ -10,8 +8,15 @@ import {
   ItemTitle,
 } from "@/components/ui/item"
 import { AddSubscribers } from "@/app/(protected)/audiences/[audienceId]/AddSubscribers"
+import { DeleteModal } from "./DeleteModal"
+import { deleteAudience } from "@/app/actions/audienceActions/audience"
 
 export function CustomItem({audienceId}:{audienceId:string}) {
+
+  const handleDelete = async () => {
+    return await deleteAudience(audienceId)
+  }
+
   return (
     <div className="flex w-full flex-col gap-6">
       <Item variant="outline">
@@ -23,6 +28,11 @@ export function CustomItem({audienceId}:{audienceId:string}) {
         </ItemContent>
         <ItemActions>
           <AddSubscribers audienceId={audienceId}></AddSubscribers>
+          <DeleteModal 
+            onDelete={handleDelete}
+            title="Delete Audience"
+            description="This will permanently delete the audience and all associated subscribers. This action cannot be undone."
+          />
         </ItemActions>
       </Item>
       
