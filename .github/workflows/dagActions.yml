@@ -11,25 +11,25 @@ jobs:
             JOB1_VAR: 5guys
         runs-on: ubuntu-latest
         steps:
-            - run : echo "This is job 1 saying hi"
-            - run : echo "job 1 ran with env $JOB1_VAR"
+            - run: echo "This is job 1 saying hi"
+            - run: echo "job 1 ran with env $JOB1_VAR"
     job2:
         runs-on: ubuntu-latest
         steps: 
-            - run : echo "This is job 2 saying hi"
+            - run: echo "This is job 2 saying hi"
     job3:
         runs-on: ubuntu-latest
         needs: 
             - job1
             - job2
         steps:
-            - run : echo "This is job 3 saying hi"
-            - run : echo "job 3 ran with env $WORKFLOW_VAR"
+            - run: echo "This is job 3 saying hi"
+            - run: echo "job 3 ran with env $WORKFLOW_VAR"
     job4:
         runs-on: ubuntu-latest
         needs:
             - job3
         steps:
-            - run : echo "This is job 4 saying hi"
+            - run: echo "This is job 4 saying hi"
 
 
