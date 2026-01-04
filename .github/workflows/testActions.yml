@@ -7,4 +7,12 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - run: echo "Hello this is from mercury"
+            - run: |
+                echo "SSHing inside of virtual centos machine"
+                ssh 192.168.29.235
+                echo "Successfully ssh completed"
+                echo "Present working directory"
+                pwd
+
+
 
