@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import BeefreeSDK from '@beefree.io/sdk';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import z from "zod"
 import { useForm } from 'react-hook-form';
 import { saveMail } from '@/app/actions/mailActions/mails';
+import { toast } from 'sonner';
 
 export default function BeefreeEditor() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -93,7 +94,7 @@ export default function BeefreeEditor() {
   const onSubmit = async (values:z.infer<typeof formSchema>)=>{
     try{
       if(template.pageHtml ==="" || template.pageJson ===""){
-      console.log("First save something into the template")
+        toast.warning("First save something into the template")
       return;
     }
 
@@ -115,11 +116,13 @@ export default function BeefreeEditor() {
 
   return (
     <div className='w-full flex p-4 rounded-md gap-4 '>
-      <div
+      <Suspense fallback={<div >Loading...</div>}>
+        <div
         id="beefree-react-demo"
         ref={containerRef}
         className='h-full '
       />
+      </Suspense>
       <form onSubmit={handleSubmit(onSubmit)} className="flex-1 h-fit">
       <Card >
       <CardHeader>

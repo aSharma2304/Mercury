@@ -42,7 +42,7 @@ export const columns: ColumnDef<Subscriber>[] = [
 
   {
     accessorKey: "created_at",
-    header: "created_ at",
+    header: "Added on",
     cell: ({ row }) => {
         const value = row.getValue("created_at");
         const date = new Date(value as string);

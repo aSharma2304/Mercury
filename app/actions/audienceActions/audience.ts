@@ -58,6 +58,62 @@ export const addAudience = async({title,description}:{title:string, description:
 
 }
 
+export const editAudience = async(audienceId:string, values:{title:string, description:string})=>{
+    try{
+    const {title,description}= values;
+    const isUserAuthenticated = await isAuthenticated();
+    const user = await currentUser();
+    
+    if(!isUserAuthenticated || !user) return {
+        status:"failed",
+        message:"User not authenticated"
+    }
+
+
+    if(!title.trim() || !description.trim()){
+        return {
+            status:"failed",
+            message:"Title or description can't be empty"
+        }
+    }
+
+    const dbUser = await prisma.users.findUnique({
+        where: { clerkId: user.id },       
+    });
+
+    if(!dbUser) return {
+            status:"failed",
+            message:"No user found with this clerkId"
+    }
+
+    const updatedAudience = await prisma.audiences.update({
+        where:{
+            id:audienceId
+        },
+        data: {
+            name: title,
+            description
+        }
+    });
+
+    return {
+        status:"success",
+        message:"Updated Audience",
+        audience:updatedAudience,
+    }
+
+  }catch(err:any){
+    console.warn("Error while updating audience");
+    return {
+         status:"failed",
+        message:"Error while updating audience",
+        error:err,
+    }
+
+  }
+
+}
+
 export const getAudience = async(audienceId:string)=>{
 
     try{
@@ -89,6 +145,32 @@ export const getAudience = async(audienceId:string)=>{
         return {
             status:"failed",
             message:"Error while fetching audience",
+            error:err,
+        }
+    }
+}
+export const getAudiences = async()=>{
+
+    try{
+        const isUserAuthenticated = await isAuthenticated();
+    if(!isUserAuthenticated) return {
+        status:"failed",
+        message:"User not authenticated"
+    }
+
+    const audiences = await prisma.audiences.findMany()
+
+    return {
+        status:"success",
+        message:"Found Audiences Successfully",
+        audiences:audiences
+    }
+
+    }catch(err:any){
+        console.warn("Error while fetching audiences");
+        return {
+            status:"failed",
+            message:"Error while fetching audiences",
             error:err,
         }
     }

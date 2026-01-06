@@ -1,30 +1,91 @@
+'use client'
+
 import Container from '@/components/custom/Container'
 import HeadingPair from '@/components/custom/HeadingPair'
 import { AudienceCard } from './components/AudienceCard'
 import CustomSearch from '@/components/custom/CustomSearch'
-import { AddSubscribers } from './components/CreateAudience'
-import { getAllSubscribers } from '@/app/actions/audienceActions/addSubscribers'
+import { AddAudience } from './components/CreateAudience'
+import { getAudiences } from '@/app/actions/audienceActions/audience'
+import { useEffect, useState } from 'react'
 
-export const revalidate = 60;
+export type AudienceType = {
+  id: string
+  userId: number
+  name: string
+  description: string
+  subscriber_count: number
+  created_at: Date
+  updated_at: Date
+}
 
-const page = async () => {
+const Page = () => {
+  const [audiences, setAudiences] = useState<AudienceType[]>([])
+  const [allAudiences, setAllAudiences] = useState<AudienceType[]>([])
 
-  const data = await getAllSubscribers() || [];
-  console.log("got audiences data",data);
+  const fetchAudiences = async () => {
+    const { audiences: data } = (await getAudiences()) || {}
+    setAudiences(data || [])
+    setAllAudiences(data || [])
+  }
+
+  useEffect(() => {
+    fetchAudiences()
+  }, [])
+
+  const setAudienceSmart = (input: AudienceType | AudienceType[]) => {
+    setAudiences(prev => {
+      const updates = Array.isArray(input) ? input : [input]
+      const map = new Map(prev.map(a => [a.id, a]))
+
+      for (const audience of updates) {
+        map.set(audience.id, audience)
+      }
+
+      return Array.from(map.values())
+    })
+
+    // keep source list in sync
+    setAllAudiences(prev => {
+      const updates = Array.isArray(input) ? input : [input]
+      const map = new Map(prev.map(a => [a.id, a]))
+
+      for (const audience of updates) {
+        map.set(audience.id, audience)
+      }
+
+      return Array.from(map.values())
+    })
+  }
 
   return (
     <Container>
-      <HeadingPair heading='Audiences' subheading='Create and manage audiences that suit your needs'/>
-      <section className='w-full flex justify-between'>
-      <CustomSearch placeholder='Search Audiences'/>
-      <AddSubscribers/>
+      <HeadingPair
+        heading="Audiences"
+        subheading="Create and manage audiences that suit your needs"
+      />
+
+      <section className="w-full flex justify-between">
+        <CustomSearch
+          searchField="name"
+          placeholder="Search Audiences"
+          sourceItems={allAudiences}
+          setFilteredItems={setAudiences}
+        />
+
+        <AddAudience setItem={setAudienceSmart} />
       </section>
-      <section className='flex flex-wrap gap-6 items-stretch  '>
-      {data?.map((item)=><AudienceCard item={item}  key={item.id}/>)}
+
+      <section className="flex flex-wrap gap-6 items-stretch">
+        {audiences.map(item => (
+          <AudienceCard
+            key={item.id}
+            item={item}
+            setAudiences={setAudienceSmart}
+          />
+        ))}
       </section>
     </Container>
-    
   )
 }
 
-export default page
+export default Page

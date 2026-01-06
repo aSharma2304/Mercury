@@ -48,18 +48,13 @@ export function DeleteModal({
     setIsDeleting(true)
     try {
       const { status, message } = await onDelete()
-      
-      if (status === "success") {
-        toast.success(message)
-        setIsOpen(false)
-        setDeleteInput("")
-      } else {
-        toast.error(message)
-      }
+
     } catch (error) {
       toast.error("An error occurred while deleting")
     } finally {
+      setDeleteInput("")
       setIsDeleting(false)
+      setIsOpen(false);
     }
   }
 
@@ -68,7 +63,7 @@ export function DeleteModal({
       <DialogTrigger asChild>
         {triggerButton || <Button variant="destructive">Delete</Button>}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-106.25">
         <form onSubmit={handleDelete}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
