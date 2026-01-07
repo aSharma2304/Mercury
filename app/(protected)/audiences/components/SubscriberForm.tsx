@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { addSubscribersForm } from "@/app/actions/audienceActions/addSubscribers";
 
-const SubscriberForm = ({onClose,audienceId} :{onClose:()=>void,audienceId:string}) => {
+const SubscriberForm = ({onClose,audienceId,updateSubsList} :{onClose:()=>void,audienceId:string,updateSubsList:(x:any[])=>void}) => {
     const formSchema = z.object({
         name:z.string("Name is required").min(3,"Name should be atleast 3 characters long"),
         email:z.email("Email is required"),
@@ -19,7 +19,8 @@ const SubscriberForm = ({onClose,audienceId} :{onClose:()=>void,audienceId:strin
 
     const onSubmit = async (values:{ name: string; email: string; })=>{
         const updatedValues = {...values,audienceId};
-        addSubscribersForm(updatedValues);
+        const res = await addSubscribersForm(updatedValues);
+        updateSubsList([res?.subscriber]);
         onClose();
     }
   return (

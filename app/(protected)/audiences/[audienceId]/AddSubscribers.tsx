@@ -5,7 +5,6 @@ import {
   DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -17,7 +16,7 @@ import { useState } from "react"
 import ApiForm from "../components/ApiForm"
 import JsonForm from "../components/JsonForm"
 
-export function AddSubscribers({audienceId}:{audienceId:string}) {
+export function AddSubscribers({audienceId ,updateSubsList}:{audienceId:string,updateSubsList:(x:any[])=>void}) {
   const [open, setOpen] = useState(false)
   return (
     <Dialog open={open} onOpenChange={setOpen} >
@@ -43,14 +42,14 @@ export function AddSubscribers({audienceId}:{audienceId:string}) {
             <TabsContent value="form" className="mt-4">
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">Add recipients manually using the form below</p>
-                <SubscriberForm audienceId={audienceId} onClose={() => setOpen(false)}/>
+                <SubscriberForm updateSubsList={updateSubsList} audienceId={audienceId} onClose={() => setOpen(false)}/>
               </div>
             </TabsContent>
             
             <TabsContent value="excel" className="mt-4">
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">Upload an Excel file containing recipient data</p>
-                <ExcelUpload onClose={() => setOpen(false)} />
+                <ExcelUpload updateSubsList={updateSubsList} onClose={() => setOpen(false)} audienceId={audienceId} />
               </div>
             </TabsContent>
             
@@ -64,7 +63,7 @@ export function AddSubscribers({audienceId}:{audienceId:string}) {
             <TabsContent value="json" className="mt-4">
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">Paste JSON data directly</p>
-                <JsonForm audienceId={audienceId}  onClose={() => setOpen(false)} />
+                <JsonForm audienceId={audienceId} onClose={() => setOpen(false)} />
               </div>
             </TabsContent>
           </Tabs>

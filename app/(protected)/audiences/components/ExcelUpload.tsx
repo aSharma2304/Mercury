@@ -7,12 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { addSubscribersExcel } from "@/app/actions/audienceActions/addSubscribers";
 
-const ExcelUpload = ({onClose} :{onClose:()=>void}) => {
+const ExcelUpload = ({onClose,audienceId,updateSubsList} :{onClose:()=>void,audienceId:string,updateSubsList:(x:any[])=>void}) => {
     const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     const excelSchema = z.object({
-    name:z.string().optional(),
-    email:z.string().optional() , 
+    name:z.string(),
+    email:z.string() , 
     file: z
         .instanceof(FileList)
         .refine((files) => files.length > 0, "File is required")
@@ -30,10 +30,10 @@ const ExcelUpload = ({onClose} :{onClose:()=>void}) => {
     })
 
     const selectedFile = watch("file");
-    console.log(selectedFile)
 
     const onSubmit = async (values:z.infer<typeof excelSchema>)=>{
-        addSubscribersExcel(values);
+        const res = await addSubscribersExcel({...values,audienceId});
+        updateSubsList(res?.subscribers || [])
         onClose();
     }
 

@@ -121,6 +121,54 @@ export const getMails = async()=>{
     }
 }
 
+export const getMail = async(mailId:string | string[])=>{
+     try{
+        const isUserAuthenticated = await isAuthenticated();
+        if(!isUserAuthenticated){
+            return {
+                status:"failed",
+                message:"User not authenticated",
+            }
+        }
+
+        const user = await currentUser();
+
+        const foundUser = await prisma.users.findUnique({
+            where:{
+                clerkId:user?.id
+            }
+        })
+
+        if(!foundUser){
+            return {
+                status:"failed",
+                message:"User not found with this id",
+            }
+        }
+
+        const id = Array.isArray(mailId) ? mailId[0] : mailId;
+        
+        const mail = await prisma.email_template.findUnique({
+            where:{
+                id:id,
+            }
+        })
+
+        return {
+            status:"success",
+            message:"Got mail successfully",
+            mail:mail,
+        }
+                
+    }catch(err:any){
+        console.warn("Error while fetching mail",err.message);
+        return {
+            status:"failed",
+            message:"Failed to fetch mail"
+        }
+    }
+}
+
 export const deleteMail = async (mailId: string) => {
     try {
 

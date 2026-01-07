@@ -2,8 +2,9 @@
 import Container from '@/components/custom/Container';
 import { CustomItem } from '@/components/custom/CustomItem';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, PencilRuler } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { formatDistanceToNow } from "date-fns";
+import * as XLSX from "xlsx";
 
 import {
 Select,
@@ -64,6 +65,10 @@ const updateAudience = (input: AudienceType | AudienceType[]) => {
   }
 }
 
+const updateSubsList = (newSubs:Subscriber[])=>{
+    setAllSubs((prev : Subscriber[])=>[...prev,...newSubs]);
+}
+
 useEffect(()=>{
     if(!audienceId) return ;
     fetchData(audienceId);
@@ -76,6 +81,20 @@ if(!audience){
 const dateTime = formatDistanceToNow(audience?.created_at ?? new Date(), {
   addSuffix: true
 });
+
+
+function downloadExcel(data:{name:string,created_at:Date,email:string}[]) {
+  // Convert JSON to worksheet
+  const worksheet = XLSX.utils.json_to_sheet(data);
+
+  // Create workbook and append worksheet
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+  // Trigger file download
+  XLSX.writeFile(workbook, "subscribers.xlsx");
+}
+
   return (
    <Container>
     <Card className='bg-neutral-50/5 '>
@@ -97,7 +116,7 @@ const dateTime = formatDistanceToNow(audience?.created_at ?? new Date(), {
             />
         </CardContent>
     </Card>
-    <CustomItem audienceId={audienceId}/>
+    <CustomItem updateSubsList={updateSubsList} audienceId={audienceId}/>
     <Card >
         <CardHeader>
              <CardTitle className='flex gap-4 text-2xl'>
@@ -125,7 +144,7 @@ const dateTime = formatDistanceToNow(audience?.created_at ?? new Date(), {
                 </SelectContent>
                 </Select>
                 </section>
-                <Button variant={ 'outline'}>
+                <Button variant={ 'outline'} onClick={()=>downloadExcel(allSubs.map((sub :Subscriber)=>{return {name:sub?.name, created_at:sub?.created_at, email:sub?.email}}))}>
                     Export xlsx <ExcelSvg />
                 </Button>
 

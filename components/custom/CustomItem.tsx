@@ -11,7 +11,7 @@ import { AddSubscribers } from "@/app/(protected)/audiences/[audienceId]/AddSubs
 import { DeleteModal } from "./DeleteModal"
 import { deleteAudience } from "@/app/actions/audienceActions/audience"
 
-export function CustomItem({audienceId}:{audienceId:string | undefined}) {
+export function CustomItem({audienceId,updateSubsList}:{audienceId:string | undefined,updateSubsList:(x:any[])=>void}) {
 
   const handleDelete = async () => {
     return await deleteAudience(audienceId || "")
@@ -27,7 +27,7 @@ export function CustomItem({audienceId}:{audienceId:string | undefined}) {
           </ItemDescription>
         </ItemContent>
         <ItemActions className="flex gap-3">
-          <AddSubscribers audienceId={audienceId || ""}></AddSubscribers>
+          <AddSubscribers updateSubsList={updateSubsList} audienceId={audienceId || ""}></AddSubscribers>
           <DeleteModal 
             onDelete={handleDelete}
             title="Delete Audience"
