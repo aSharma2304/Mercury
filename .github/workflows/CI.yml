@@ -17,16 +17,22 @@ jobs:
       - name: Login to Docker Hub
         shell: bash
         run: |
-          docker login \
-            -u abhinav04 -p ${{secrets.DOCKER_HUB_TOKEN}}
+          echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login \
+            -u "${{ secrets.DOCKER_HUB_USERNAME }}" \
+            --password-stdin
 
       - name: Build Docker Image
-        run: docker build -t abhinav04/mercury:latest \
-          --build-arg NEXT_PUBLIC_BEEFREE_ID=${{ secrets.NEXT_PUBLIC_BEEFREE_ID }} \
-          --build-arg NEXT_PUBLIC_BEEFREE_SECRET=${{ secrets.NEXT_PUBLIC_BEEFREE_SECRET }} \
-          --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }} \
-          --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} \
-          .
+        shell: bash
+        run: |
+          docker build \
+            -t abhinav04/mercury:latest \
+            --build-arg NEXT_PUBLIC_BEEFREE_ID="${{ secrets.NEXT_PUBLIC_BEEFREE_ID }}" \
+            --build-arg NEXT_PUBLIC_BEEFREE_SECRET="${{ secrets.NEXT_PUBLIC_BEEFREE_SECRET }}" \
+            --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}" \
+            --build-arg DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            .
 
       - name: Push Image to Docker Hub
-        run: docker push abhinav04/mercury:latest
+        shell: bash
+        run: |
+          docker push abhinav04/mercury:latest
