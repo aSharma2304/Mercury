@@ -1,0 +1,31 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  publish_docker_image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        run: |
+          docker login \
+            -u abhinav04 -p ${{secrets.DOCKER_HUB_TOKEN}}
+
+      - name: Build Docker Image
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_BEEFREE_ID=${{ secrets.NEXT_PUBLIC_BEEFREE_ID }} \
+            --build-arg NEXT_PUBLIC_BEEFREE_SECRET=${{ secrets.NEXT_PUBLIC_BEEFREE_SECRET }} \
+            --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }} \
+            -t abhinav04/mercury:latest .
+
+      - name: Push Image to Docker Hub
+        run: docker push abhinav04/mercury:latest
