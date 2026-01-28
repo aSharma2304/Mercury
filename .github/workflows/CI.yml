@@ -16,10 +16,7 @@ jobs:
 
       - name: Login to Docker Hub
         shell: bash
-        run: |
-          echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login \
-            -u "${{ secrets.DOCKER_HUB_USERNAME }}" \
-            --password-stdin
+        run: docker login -u abhinav04 -p ${{secrets.DOCKER_HUB_TOKEN}}
 
       - name: Build Docker Image
         shell: bash
